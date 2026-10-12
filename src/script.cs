@@ -9,7 +9,7 @@ using System.ComponentModel;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-var app = new CommandApp<PhoneticCommand>();
+CommandApp<PhoneticCommand> app = new();
 
 await app.RunAsync(args);
 
@@ -32,13 +32,13 @@ internal sealed class PhoneticCommand : AsyncCommand<PhoneticSettings>
         PhoneticSettings settings,
         CancellationToken cancellationToken)
     {
-        var phoneticWords = ConvertToNato(settings.Word);
+        List<string> phoneticWords = ConvertToNato(settings.Word);
 
-        var title = settings.Word.Transform(To.TitleCase);
+        string title = settings.Word.Transform(To.TitleCase);
 
-        var tree = new Tree($"[bold red]{Markup.Escape(title)}[/]");
+        Tree tree = new($"[bold red]{Markup.Escape(title)}[/]");
 
-        var panel = new Panel(tree)
+        Panel panel = new Panel(tree)
             .Header("NATO Phonetic Alphabet")
             .BorderColor(Color.Cyan)
             .RoundedBorder();
@@ -47,11 +47,11 @@ internal sealed class PhoneticCommand : AsyncCommand<PhoneticSettings>
             .Overflow(VerticalOverflow.Visible)
             .StartAsync(async liveContext =>
             {
-                foreach (var phoneticWord in phoneticWords)
+                foreach (string phoneticWord in phoneticWords)
                 {
                     await Task.Delay(250, cancellationToken);
 
-                    var node = $"[bold green]{Markup.Escape(phoneticWord)}[/]";
+                    string node = $"[bold green]{Markup.Escape(phoneticWord)}[/]";
 
                     tree.AddNode(node);
 
